@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>黑魔法師 技能循環表 · 30 / 40 / 50 / 60 / 70 / 80 / 90 / 100</title>
+<style>
+  :root{
+    --ink:#0D1016;
+    --ink-2:#141922;
+    --ink-3:#1C2331;
+    --line:rgba(226,235,247,.11);
+    --line-2:rgba(226,235,247,.22);
+    --cream:#E2EBF7;
+    --muted:#7E8A9E;
+    --fire:#E5703C;
+    --fire-dim:rgba(229,112,60,.10);
+    --ice:#57A6E4;
+    --ice-dim:rgba(87,166,228,.10);
+    --arcane:#A987DE;
+    --display:"Futura","Avenir Next","Century Gothic","Trebuchet MS","Noto Sans TC","PingFang TC",sans-serif;
+    --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ink);color:var(--cream);
+    font-family:var(--body);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(760px 360px at 78% -6%, rgba(229,112,60,.16), transparent 70%),
+      radial-gradient(760px 360px at 20% 6%, rgba(87,166,228,.14), transparent 70%);
+    background-repeat:no-repeat;
+  }
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px 90px}
+
+  header.mast{padding:58px 0 26px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--arcane);margin:0 0 16px}
+  h1{font-family:var(--display);font-weight:600;font-size:clamp(34px,6.4vw,60px);line-height:1.02;margin:0;letter-spacing:.06em}
+  h1 .en{display:block;font-size:.32em;letter-spacing:.4em;color:var(--muted);margin-top:16px;text-transform:uppercase;font-family:var(--mono);font-weight:400}
+  .lede{max-width:64ch;color:#AFBACB;margin:22px 0 0}
+  .lede b{color:var(--cream);font-weight:600}
+  .lede .f{color:var(--fire)} .lede .i{color:var(--ice)}
+
+  .tabs{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;background:rgba(13,16,22,.95);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin:0 -22px;padding:0 22px}
+  .tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);
+    cursor:pointer;padding:14px 17px 11px;font-family:var(--mono);transition:color .18s,border-color .18s;text-align:center}
+  .tab .lv{font-family:var(--display);font-weight:600;font-size:22px;display:block;line-height:1;letter-spacing:.04em}
+  .tab .ex{font-size:9px;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+  .tab:hover{color:var(--cream)}
+  .tab[aria-selected="true"]{color:var(--cream);border-bottom-color:var(--fire)}
+  .tab:focus-visible{outline:2px solid var(--arcane);outline-offset:-2px}
+
+  .panel[hidden]{display:none}
+  .panel{animation:fade .3s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .thesis{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:36px;padding:36px 0 10px;border-bottom:1px solid var(--line)}
+  @media(max-width:780px){.thesis{grid-template-columns:1fr;gap:20px}}
+  .thesis h2{font-family:var(--display);font-weight:600;font-size:27px;margin:0 0 12px;line-height:1.25;letter-spacing:.02em}
+  .thesis p{margin:0;color:#AFBACB}
+  .why{list-style:none;margin:0;padding:0}
+  .why li{padding:11px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start;color:#AFBACB;font-size:14px}
+  .why li:last-child{border-bottom:1px solid var(--line)}
+  .why .k{font-family:var(--mono);font-size:10.5px;color:var(--arcane);padding-top:4px}
+  .why b{color:var(--cream);font-weight:600}
+
+  section.block{padding:36px 0 6px;border-bottom:1px solid var(--line)}
+  section.block:last-of-type{border-bottom:0}
+  .head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  .head h3{font-family:var(--display);font-weight:600;font-size:23px;margin:0;letter-spacing:.03em}
+  .head .meta{font-family:var(--mono);font-size:11px;letter-spacing:.13em;color:var(--arcane);text-transform:uppercase}
+  .head .rule{flex:1;height:1px;background:var(--line-2);min-width:30px}
+  .sub{color:#94A0B3;font-size:13.5px;margin:0 0 20px;max-width:76ch}
+
+  .rail{display:flex;flex-wrap:wrap;align-items:flex-start;gap:0 3px}
+  .step{position:relative;width:94px;padding:10px 4px 6px;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .step .n{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:6px}
+  .ico{width:46px;height:46px;border-radius:3px;display:block;background:var(--ink-3);border:1px solid var(--line-2);object-fit:cover}
+  .fallback{width:46px;height:46px;border-radius:3px;background:linear-gradient(150deg,var(--ink-3),#26304A);
+    border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:17px;color:var(--arcane)}
+  .step .nm{font-size:12.5px;line-height:1.35;margin-top:7px}
+  .step .en{font-family:var(--mono);font-size:9px;letter-spacing:.04em;color:var(--muted);line-height:1.3;margin-top:2px;word-break:break-word}
+  .step .tip{font-size:10.5px;color:#7F8B9E;line-height:1.35;margin-top:4px}
+  .step.f .ico,.step.f .fallback{border-color:rgba(229,112,60,.6);box-shadow:0 0 0 1px rgba(229,112,60,.16)}
+  .step.i .ico,.step.i .fallback{border-color:rgba(87,166,228,.6);box-shadow:0 0 0 1px rgba(87,166,228,.16)}
+  .step.a .ico,.step.a .fallback{border-color:rgba(169,135,222,.65);box-shadow:0 0 0 1px rgba(169,135,222,.18)}
+  .step .mp{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:4px;letter-spacing:.02em}
+
+  .weave{width:94px;padding:0 4px 6px;display:flex;flex-direction:column;align-items:center;gap:5px}
+  .weave .pip{display:flex;align-items:center;gap:6px;border:1px dashed rgba(169,135,222,.5);border-radius:99px;
+    padding:3px 9px 3px 4px;background:rgba(169,135,222,.06);max-width:100%}
+  .weave img,.weave .fb{width:20px;height:20px;border-radius:2px;flex:0 0 20px;background:var(--ink-3);
+    display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--arcane);border:1px solid var(--line-2)}
+  .weave .lb{font-size:10px;color:#C2CCDA;line-height:1.2;text-align:left}
+
+  /* phase lane */
+  .lane{position:relative;border-left:3px solid var(--line-2);padding:14px 0 4px 16px;margin:0 0 18px}
+  .lane.fire{border-left-color:var(--fire);background:linear-gradient(90deg,var(--fire-dim),transparent 55%)}
+  .lane.ice{border-left-color:var(--ice);background:linear-gradient(90deg,var(--ice-dim),transparent 55%)}
+  .lane .lb{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin:0 0 2px}
+  .lane.fire .lb{color:var(--fire)} .lane.ice .lb{color:var(--ice)}
+  .lane .desc{font-size:12.5px;color:#94A0B3;margin:0 0 6px;max-width:70ch}
+  .swap{display:flex;align-items:center;gap:10px;margin:-6px 0 12px 16px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .swap::before{content:"";width:22px;height:1px;background:var(--line-2)}
+
+  .ladder{list-style:none;margin:0;padding:0;counter-reset:p;max-width:840px}
+  .ladder li{counter-increment:p;display:grid;grid-template-columns:30px 46px 1fr;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+  .ladder li:last-child{border-bottom:1px solid var(--line)}
+  .ladder li::before{content:counter(p);font-family:var(--display);font-weight:600;font-size:19px;color:var(--arcane);text-align:center;line-height:1}
+  .ladder .txt strong{display:block;font-size:14.5px;font-weight:600}
+  .ladder .txt span{font-size:12.5px;color:#94A0B3}
+  .ladder .txt em{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--muted);margin-left:8px}
+
+  .callout{border-left:2px solid var(--fire);padding:2px 0 2px 16px;margin:20px 0 4px;color:#AFBACB;font-size:13.5px;max-width:78ch}
+  .callout b{color:var(--cream)}
+
+  footer{padding:44px 0 0;color:var(--muted);font-size:12.5px;max-width:80ch}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin:26px 0 18px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted)}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+  @media(max-width:520px){.step,.weave{width:80px}.ico,.fallback{width:40px;height:40px}.lane{padding-left:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Final Fantasy XIV · 7.x</p>
+  <h1>黑魔法師 技能循環<span class="en">Black Mage · Rotation by Level</span></h1>
+  <p class="lede">黑魔只有一個問題要解：<b class="f">火階段</b>把 10000 點魔力換成最多的傷害，<b class="i">冰階段</b>用最少的 GCD 把魔力補回來。每個等級的按鍵順序，都是這道算式在當下工具下的最佳解。</p>
+</header>
+
+<div class="tabs" role="tablist" aria-label="等級"></div>
+<main id="panels"></main>
+
+<footer>
+  <div class="legend">
+    <span><i style="background:#E5703C"></i>火階段（星極火）</span>
+    <span><i style="background:#57A6E4"></i>冰階段（靈極冰）</span>
+    <span><i style="background:#A987DE"></i>資源／無屬性</span>
+    <span><i style="background:none;border:1px dashed rgba(169,135,222,.8)"></i>oGCD 插隊</span>
+  </div>
+  <p>順序由官方技能表的威力、魔力消耗、屬性加成與特性等級推算。三條貫穿全等級的計算結果：<br>
+  ① <b>火系法術在冰階段是零消耗、冰系法術在火階段是零消耗</b>，所以每次換階段的第一發一定要是對面屬性的大招（火焰III／冰結III），既免費、詠唱又減半。<br>
+  ② 星極火 3 下火系消耗加倍，因此「每點魔力換多少威力」才是選招標準——火焰IV（300／800）永遠優先於火焰III（290／2000）。<br>
+  ③ 每次屬性切換都會給雷雲，一個循環剛好插一發雷續 DoT，多的不要浪費在補刀上。</p>
+</footer>
+
+</div>
+
+<script>
+const B = "https://lds-img.finalfantasyxiv.com/d/";
+const A = {
+  blizzard:["dab74d4a196c546228d67c91db4bde70c32c45df","冰結","Blizzard"],
+  fire:["0f0b18de207de52d394b2ca8cb990a38e96587e0","火焰","Fire"],
+  transpose:["11343c230e7ebd41588ca8f684cb99ee13809398","星靈移位","Transpose"],
+  thunder:["db30f0fa05ce4f541f839c5b2c57cfe0e9fb77f8","雷電","Thunder"],
+  blizzard2:["c4883e7698b37e901837be6a0bcc8de043847479","冰結 II","Blizzard II"],
+  fire2:["8876f1b3cf116acf7138253e0193396c75698651","火焰 II","Fire II"],
+  thunder2:["67205b06f51ddd0e07f16441e38e90d59840f1b6","雷電 II","Thunder II"],
+  manafont:["1b9ba4e020c77e1768d7d15d3c8aac1e7b7d88ea","魔泉","Manafont"],
+  fire3:["3ff8dcabba57f6a697d5a86fc7490884b74eddff","火焰 III","Fire III"],
+  blizzard3:["6dbb819d3f64b93d6f6ffa23a73101c79592ae2f","冰結 III","Blizzard III"],
+  umbralsoul:["7dbfbe8ecadac526c0a2739cd45571f6ea2732fc","靈極魂","Umbral Soul"],
+  freeze:["a26308be548e58eb346aae1b4850ceabc417f35e","玄冰","Freeze"],
+  thunder3:["2efb022c0715f802a88e1edef4924c075e92a53d","雷電 III","Thunder III"],
+  flare:["bc3d31c27d861d18280280b18a5f2e5ab0f2858e","核爆","Flare"],
+  leylines:["f3540a1d13a0387b442767d1a4279e94d9d24097","黑魔紋","Ley Lines"],
+  blizzard4:["d370de07c30f08bd306ed3c58f0f0490b4541870","冰結 IV","Blizzard IV"],
+  fire4:["92e87bf20382bc6359c7448008c3423724b9f0b4","火焰 IV","Fire IV"],
+  thunder4:["c141aa71c34830d6b161c667042815c5d7805320","雷電 IV","Thunder IV"],
+  triplecast:["61cd894fc6b3e28004512ed61ffc0eb4fef170f2","三連詠唱","Triplecast"],
+  foul:["801f21d137c07c099140d653b8a69995fc2b8404","穢濁","Foul"],
+  despair:["ec2a834393b6ffaf415b043fb9e2c6d23afde9cd","絕望","Despair"],
+  xeno:["b1fcdd06d76b9eb7c7a55364b81bc3ed2674631c","異言","Xenoglossy"],
+  amplifier:["afd6e5ce788dd3a0bf9159f29de292886c3febe4","詳述","Amplifier"],
+  paradox:["e4dbf2ab28919eb82a4b410db2a07cf59706c011","悖論","Paradox"],
+  highthunder:["1babd2b0f9ad34451ac3ac29230b2239db95065b","高閃雷","High Thunder"],
+  flarestar:["1bf799ec68187691dceb2adb9dc0ea1259f03dd1","核爆星","Flare Star"],
+  lucid:["3629c6854aa559656623925e2489b60c2fa91e18","醒目","Lucid Dreaming"],
+  swiftcast:["27d401b3cfbf90c846ffeaa9f661afb4bd77ce98","即刻詠唱","Swiftcast"],
+  potion:[null,"智力藥","Tincture"]
+};
+
+function S(a,o){return Object.assign({t:"gcd",a},o||{});}
+function O(list){return {t:"weave",list};}
+function LANE(phase,label,desc,steps){return {t:"lane",phase,label,desc,steps};}
+function SWAP(txt){return {t:"swap",txt};}
+
+const LEVELS=[
+{
+  lv:30, ex:"轉職", cap:"上限只有兩層",
+  thesis:"30 級剛轉職，星極火與靈極冰各只疊得到 2 層，也還沒有火焰III／冰結III。所有事情都圍著「火焰」這一發打轉：把滿魔力全部換成 AF2 的火焰，然後用冰結補回來。",
+  why:[
+    ["疊層","AF2 讓火系威力 +60%。所以從冰轉火之後<b>要先用兩發火焰把層數推到 2</b>，再開始傾瀉。"],
+    ["免費","在冰階段時火系法術<b>不用魔力</b>（威力 -20%），所以冰轉火的第一發火焰是白拿的。反之亦然。"],
+    ["回魔","靈極冰 1 每發冰系回 2500、靈極冰 2 回 5000。用冰結 II 一發直接跳到冰 2，回魔比慢慢疊快得多。"],
+    ["雷雲","每次屬性切換會給雷雲，插一發雷電把 DoT 續上。DoT 24 秒，一個循環一次剛好。"]
+  ],
+  blocks:[
+    {title:"開場", meta:"Opener",
+     sub:"從中立狀態起手，第一發火焰只花普通魔力；之後每一發都是雙倍價。魔力見底就用魔泉續一輪。",
+     rows:[
+      S("fire",{n:"1",cls:"f",tip:"倒數 -2 秒起手",mp:"→ 火 1"}),
+      S("thunder",{n:"2",cls:"a",tip:"雷雲"}),
+      S("fire",{n:"3",cls:"f",mp:"→ 火 2"}),
+      S("fire",{n:"4",cls:"f"}),
+      S("fire",{n:"5",cls:"f"}),
+      S("fire",{n:"6",cls:"f"}),
+      S("fire",{n:"7",cls:"f"}),
+      S("fire",{n:"8",cls:"f",tip:"魔力見底"}),
+      O([["manafont","補滿魔力"]]),
+      S("fire",{n:"9",cls:"f"}),
+      S("fire",{n:"10",cls:"f"}),
+      S("fire",{n:"11",cls:"f"}),
+      S("fire",{n:"12",cls:"f"}),
+      S("fire",{n:"13",cls:"f"}),
+      S("fire",{n:"14",cls:"f",tip:"再次見底"}),
+      S("blizzard2",{n:"15",cls:"i",tip:"直接到冰 2"}),
+      S("blizzard",{n:"16",cls:"i",tip:"回滿魔力"})
+     ]},
+    {title:"標準循環", meta:"Loop · 約 10 GCD",
+     sub:"火七、冰二、雷一。切回火的第一發永遠是免費的那一發。",
+     rows:[
+      LANE("fire","火階段 · 星極火 2","第一發免費（從冰階段出手），第二發把層數推滿，之後全速傾瀉到魔力見底。",[
+        S("fire",{n:"1",cls:"f",tip:"免費 · 進火 1"}),
+        S("fire",{n:"2",cls:"f",tip:"進火 2"}),
+        S("fire",{n:"3",cls:"f"}),
+        S("fire",{n:"4",cls:"f"}),
+        S("fire",{n:"5",cls:"f"}),
+        S("fire",{n:"6",cls:"f"}),
+        S("fire",{n:"7",cls:"f",tip:"魔力見底"})
+      ]),
+      SWAP("屬性切換 → 取得雷雲"),
+      LANE("ice","冰階段 · 靈極冰 2","冰結 II 是這個等級最快回到冰 2 的手段；補滿魔力就立刻切回火。",[
+        S("blizzard2",{n:"8",cls:"i",tip:"免費 · 直接冰 2"}),
+        S("thunder",{n:"9",cls:"a",tip:"雷雲，續 DoT"}),
+        S("blizzard",{n:"10",cls:"i",tip:"回滿魔力"})
+      ])
+     ]},
+    {title:"插隊與資源", meta:"oGCD",
+     ladder:[
+      ["manafont","魔泉","魔力見底的那一刻按，直接再跑一輪火階段","120s"],
+      ["lucid","醒目","魔泉還在轉時的備援回魔","60s"],
+      ["transpose","星靈移位","只在需要立刻換屬性又不想花 GCD 時用","5s"]
+     ]}
+  ]
+},
+{
+  lv:40, ex:"三層成形", cap:"火焰III／冰結III 定型循環",
+  thesis:"35 級一次拿到火焰III、冰結III、靈極魂與第三層屬性。從這裡開始，黑魔的循環骨架就固定下來了，之後的等級都只是往這個骨架上塞更好的招。",
+  why:[
+    ["換階段","火焰III 從冰 3 出手<b>免費、詠唱減半、落地直接火 3</b>。這是唯一該用火焰III的時機——在火階段裡它要花 4000 魔力只換 290 威力。"],
+    ["回魔","冰結III 從火 3 出手同樣免費減半，落地冰 3 一次回滿 10000。所以<b>冰階段只需要一到兩個 GCD</b>。"],
+    ["效率","火階段選招看的是「每點魔力換多少威力」：火焰 180／1600 遠勝火焰III 290／4000。這個等級的火階段主力就是火焰。"],
+    ["玄冰","玄冰要到 58 級才給冰針，現在它只是一發 120 威力的範圍法術，<b>單體不要用</b>。"]
+  ],
+  blocks:[
+    {title:"開場", meta:"Opener",
+     sub:"開戰前用靈極魂把冰 3 與滿魔力備好，倒數讀火焰III，讓它在戰鬥開始時落地。",
+     rows:[
+      S("umbralsoul",{n:"前置",cls:"i",tip:"戰鬥外 · 冰3 滿魔"}),
+      S("fire3",{n:"1",cls:"f",tip:"倒數起手 · 免費",mp:"→ 火 3"}),
+      S("thunder",{n:"2",cls:"a",tip:"雷雲"}),
+      S("fire",{n:"3",cls:"f"}),
+      S("fire",{n:"4",cls:"f"}),
+      S("fire",{n:"5",cls:"f"}),
+      S("fire",{n:"6",cls:"f"}),
+      S("fire",{n:"7",cls:"f"}),
+      S("fire",{n:"8",cls:"f",tip:"魔力見底"}),
+      O([["manafont","補滿魔力"]]),
+      S("fire",{n:"9",cls:"f"}),
+      S("fire",{n:"10",cls:"f"}),
+      S("fire",{n:"11",cls:"f"}),
+      S("fire",{n:"12",cls:"f"}),
+      S("fire",{n:"13",cls:"f"}),
+      S("fire",{n:"14",cls:"f"}),
+      S("blizzard3",{n:"15",cls:"i",tip:"免費 · 回滿魔力"})
+     ]},
+    {title:"標準循環", meta:"Loop · 約 9 GCD",
+     rows:[
+      LANE("fire","火階段 · 星極火 3","火焰III 開場一發免費，之後全部交給火焰，直到魔力剩不到一發的量。",[
+        S("fire3",{n:"1",cls:"f",tip:"免費 · 進火 3"}),
+        S("fire",{n:"2",cls:"f"}),
+        S("fire",{n:"3",cls:"f"}),
+        S("fire",{n:"4",cls:"f"}),
+        S("fire",{n:"5",cls:"f"}),
+        S("fire",{n:"6",cls:"f"}),
+        S("fire",{n:"7",cls:"f",tip:"魔力見底"})
+      ]),
+      SWAP("屬性切換 → 取得雷雲"),
+      LANE("ice","冰階段 · 靈極冰 3","一發冰結III 就回滿魔力，所以冰階段只留給續 DoT 的雷。",[
+        S("blizzard3",{n:"8",cls:"i",tip:"免費 · 回滿 10000"}),
+        S("thunder",{n:"9",cls:"a",tip:"雷雲，續 DoT"})
+      ])
+     ]},
+    {title:"插隊與資源", meta:"oGCD",
+     ladder:[
+      ["manafont","魔泉","火階段魔力見底時按，接著再跑一輪完整火階段","120s"],
+      ["umbralsoul","靈極魂","只在冰階段可用；戰鬥外用來備冰 3 與滿魔","GCD"],
+      ["lucid","醒目","備援回魔","60s"]
+     ]}
+  ]
+},
+{
+  lv:50, ex:"蒼天以前", cap:"核爆收尾、火法加速",
+  thesis:"42 級的火法加速讓火焰有 40% 機率送一發免費瞬發的火焰III，50 級的核爆則給了火階段一個乾淨的收尾。火階段第一次有了「把剩魔力榨乾」的手段。",
+  why:[
+    ["火法加速","觸發後的火焰III <b>不用魔力、不用詠唱</b>，威力（290）又比火焰（180）高。<b>觸發就立刻插掉</b>，不要留。"],
+    ["核爆收尾","核爆吃光所有魔力換 240 威力。魔力剩約一發火焰的量時，打核爆比再擠一發火焰划算，所以火階段固定用核爆結束。"],
+    ["雷電III","DoT 27 秒，一個循環一次剛好。仍然只在切換屬性拿到雷雲時使用。"],
+    ["還沒有冰針","冰針特性要 58 級。現在火系在星極火 3 下是實打實的雙倍消耗，所以火階段大約六到七個 GCD 就見底。"]
+  ],
+  blocks:[
+    {title:"開場", meta:"Opener",
+     rows:[
+      S("umbralsoul",{n:"前置",cls:"i",tip:"戰鬥外 · 冰3 滿魔"}),
+      S("fire3",{n:"1",cls:"f",tip:"倒數起手 · 免費"}),
+      S("thunder3",{n:"2",cls:"a",tip:"雷雲"}),
+      S("fire",{n:"3",cls:"f"}),
+      S("fire",{n:"4",cls:"f"}),
+      S("fire3",{n:"5",cls:"f",tip:"火法加速觸發才有"}),
+      S("fire",{n:"6",cls:"f"}),
+      S("fire",{n:"7",cls:"f"}),
+      S("flare",{n:"8",cls:"f",tip:"吃光剩餘魔力"}),
+      O([["manafont","補滿魔力"]]),
+      S("fire",{n:"9",cls:"f"}),
+      S("fire",{n:"10",cls:"f"}),
+      S("fire",{n:"11",cls:"f"}),
+      S("fire",{n:"12",cls:"f"}),
+      S("fire",{n:"13",cls:"f"}),
+      S("flare",{n:"14",cls:"f"}),
+      S("blizzard3",{n:"15",cls:"i",tip:"免費 · 回滿魔力"})
+     ]},
+    {title:"標準循環", meta:"Loop · 約 9 GCD",
+     rows:[
+      LANE("fire","火階段 · 星極火 3","火焰III 免費開場 → 火焰傾瀉（觸發就插免費火焰III）→ 核爆榨乾。",[
+        S("fire3",{n:"1",cls:"f",tip:"免費 · 進火 3"}),
+        S("fire",{n:"2",cls:"f"}),
+        S("fire",{n:"3",cls:"f"}),
+        S("fire3",{n:"—",cls:"f",tip:"觸發時插入"}),
+        S("fire",{n:"4",cls:"f"}),
+        S("fire",{n:"5",cls:"f"}),
+        S("flare",{n:"6",cls:"f",tip:"吃光魔力"})
+      ]),
+      SWAP("屬性切換 → 取得雷雲"),
+      LANE("ice","冰階段 · 靈極冰 3","回滿魔力、續 DoT，兩個 GCD 就走。",[
+        S("blizzard3",{n:"7",cls:"i",tip:"免費 · 回滿 10000"}),
+        S("thunder3",{n:"8",cls:"a",tip:"續 DoT 27 秒"})
+      ])
+     ]},
+    {title:"插隊與資源", meta:"oGCD",
+     ladder:[
+      ["manafont","魔泉","火階段見底時按，再跑一輪完整火階段","120s"],
+      ["umbralsoul","靈極魂","戰鬥外備冰 3；戰鬥中脫離目標時維持元素","GCD"],
+      ["lucid","醒目","備援回魔","60s"]
+     ]}
+  ]
+},
+{
+  lv:60, ex:"蒼天封頂", cap:"冰針讓火階段變長一倍",
+  thesis:"58 級的冰針與 60 級的火焰IV是這個職業的分水嶺。冰針抵銷星極火的雙倍消耗，火焰IV 用 800 魔力換 300 威力——火階段的長度直接翻倍。",
+  why:[
+    ["冰針","冰結IV 給三顆冰針，<b>前三發火系只算原價</b>。等於白送 2400 點魔力，換算成兩到三個額外的火焰IV。"],
+    ["火焰IV","300 威力／800 魔力，效率是火焰的一倍以上，從此火階段的主力只有它（開場那發免費的火焰III除外）。"],
+    ["Enochian","56 級起，只要火或冰的元素還在身上就有全傷加成。<b>元素掉層等於直接損失全部傷害</b>，寧可用靈極魂空轉也不要斷。"],
+    ["黑魔紋","20 秒、詠唱與冷卻 -15%，蓋在火階段可以多擠出一個 GCD。站進去再開始傾瀉。"]
+  ],
+  blocks:[
+    {title:"開場", meta:"Opener",
+     sub:"魔力算式：冰針讓前三發火焰IV各只花 800，之後四發各 1600，正好剩下一發核爆的量。",
+     rows:[
+      S("umbralsoul",{n:"前置",cls:"i",tip:"戰鬥外 · 冰3 滿魔"}),
+      S("fire3",{n:"1",cls:"f",tip:"倒數起手 · 免費"}),
+      S("thunder3",{n:"2",cls:"a",tip:"雷雲"}),
+      O([["potion",""],["leylines","站進去"]]),
+      S("fire4",{n:"3",cls:"f",mp:"冰針 ×3"}),
+      S("fire4",{n:"4",cls:"f"}),
+      S("fire4",{n:"5",cls:"f",tip:"冰針用完"}),
+      S("fire4",{n:"6",cls:"f"}),
+      S("fire4",{n:"7",cls:"f"}),
+      S("fire4",{n:"8",cls:"f"}),
+      S("fire4",{n:"9",cls:"f"}),
+      S("flare",{n:"10",cls:"f",tip:"吃光魔力"}),
+      O([["manafont","滿魔 ＋ 3 冰針"]]),
+      S("fire4",{n:"11",cls:"f"}),
+      S("fire4",{n:"12",cls:"f"}),
+      S("fire4",{n:"13",cls:"f"}),
+      S("fire4",{n:"14",cls:"f"}),
+      S("fire4",{n:"15",cls:"f"}),
+      S("fire4",{n:"16",cls:"f"}),
+      S("fire4",{n:"17",cls:"f"}),
+      S("flare",{n:"18",cls:"f"}),
+      S("blizzard3",{n:"19",cls:"i",tip:"免費 · 回滿魔力"})
+     ]},
+    {title:"標準循環", meta:"Loop · 約 11 GCD",
+     rows:[
+      LANE("fire","火階段 · 星極火 3","火焰III（免費）→ 火焰IV ×7 → 核爆。前三發吃冰針，後四發全價。",[
+        S("fire3",{n:"1",cls:"f",tip:"免費 · 進火 3"}),
+        S("fire4",{n:"2",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"3",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"4",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"5",cls:"f"}),
+        S("fire4",{n:"6",cls:"f"}),
+        S("fire4",{n:"7",cls:"f"}),
+        S("fire4",{n:"8",cls:"f"}),
+        S("flare",{n:"9",cls:"f",tip:"吃光魔力"})
+      ]),
+      SWAP("屬性切換 → 取得雷雲"),
+      LANE("ice","冰階段 · 靈極冰 3","冰結III 回滿魔力、雷續 DoT、冰結IV 補三顆冰針，三個 GCD。",[
+        S("blizzard3",{n:"10",cls:"i",tip:"免費 · 回滿 10000"}),
+        S("thunder3",{n:"11",cls:"a",tip:"續 DoT"}),
+        S("blizzard4",{n:"12",cls:"i",tip:"取得 3 冰針"})
+      ])
+     ]},
+    {title:"插隊與資源", meta:"oGCD",
+     ladder:[
+      ["manafont","魔泉","火階段見底時按：滿魔＋3 冰針＋雷雲，直接再跑一輪","120s"],
+      ["leylines","黑魔紋","蓋在火階段開頭，整段站在裡面","120s"],
+      ["lucid","醒目","備援回魔","60s"],
+      ["umbralsoul","靈極魂","脫離目標時維持元素，保住 Enochian","GCD"]
+     ]}
+  ]
+},
+{
+  lv:70, ex:"紅蓮封頂", cap:"通常魔紋開始累積",
+  thesis:"70 級的 Enochian 強化把加成拉到 10%，同時開始每 30 秒累積一層通常魔紋，用穢濁倒出來。循環骨架沒變，多了一個必須管理的資源。",
+  why:[
+    ["通常魔紋","只要元素不斷，每 30 秒 +1 層。<b>溢出就是白白丟掉 600 威力</b>，所以看到滿層就用穢濁清掉。"],
+    ["穢濁","600 威力，這個等級還有詠唱時間，所以插在火階段中段（不要卡在核爆前後）。"],
+    ["三連詠唱","兩層充能、接下來三發瞬發。它是<b>位移工具不是輸出技</b>，拿來救走位比硬塞進循環有價值。"],
+    ["雷電IV","64 級的雷電IV是範圍版本，單體循環仍然用雷電III。"]
+  ],
+  blocks:[
+    {title:"開場", meta:"Opener",
+     rows:[
+      S("umbralsoul",{n:"前置",cls:"i",tip:"戰鬥外 · 冰3 滿魔"}),
+      S("fire3",{n:"1",cls:"f",tip:"倒數起手 · 免費"}),
+      S("thunder3",{n:"2",cls:"a",tip:"雷雲"}),
+      O([["potion",""],["leylines",""]]),
+      S("fire4",{n:"3",cls:"f",mp:"冰針 ×3"}),
+      S("fire4",{n:"4",cls:"f"}),
+      S("fire4",{n:"5",cls:"f"}),
+      S("fire4",{n:"6",cls:"f"}),
+      S("fire4",{n:"7",cls:"f"}),
+      S("fire4",{n:"8",cls:"f"}),
+      S("fire4",{n:"9",cls:"f"}),
+      S("flare",{n:"10",cls:"f"}),
+      O([["manafont",""]]),
+      S("fire4",{n:"11",cls:"f"}),
+      S("fire4",{n:"12",cls:"f"}),
+      S("fire4",{n:"13",cls:"f"}),
+      S("fire4",{n:"14",cls:"f"}),
+      S("fire4",{n:"15",cls:"f"}),
+      S("fire4",{n:"16",cls:"f"}),
+      S("fire4",{n:"17",cls:"f"}),
+      S("flare",{n:"18",cls:"f"}),
+      S("blizzard3",{n:"19",cls:"i"})
+     ]},
+    {title:"標準循環", meta:"Loop · 約 11–12 GCD",
+     rows:[
+      LANE("fire","火階段 · 星極火 3","與 60 級同型，多了一個插穢濁的位置：有層數就在中段換掉一發火焰IV。",[
+        S("fire3",{n:"1",cls:"f",tip:"免費"}),
+        S("fire4",{n:"2",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"3",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"4",cls:"f",mp:"冰針"}),
+        S("foul",{n:"—",cls:"a",tip:"有層數時插入"}),
+        S("fire4",{n:"5",cls:"f"}),
+        S("fire4",{n:"6",cls:"f"}),
+        S("fire4",{n:"7",cls:"f"}),
+        S("fire4",{n:"8",cls:"f"}),
+        S("flare",{n:"9",cls:"f",tip:"吃光魔力"})
+      ]),
+      SWAP("屬性切換 → 取得雷雲"),
+      LANE("ice","冰階段 · 靈極冰 3","三個 GCD：回滿、續 DoT、補冰針。",[
+        S("blizzard3",{n:"10",cls:"i",tip:"免費 · 回滿"}),
+        S("thunder3",{n:"11",cls:"a",tip:"續 DoT"}),
+        S("blizzard4",{n:"12",cls:"i",tip:"3 冰針"})
+      ])
+     ]},
+    {title:"插隊與資源", meta:"oGCD",
+     ladder:[
+      ["manafont","魔泉","火階段見底時按","120s"],
+      ["leylines","黑魔紋","火階段開頭蓋下去","120s"],
+      ["triplecast","三連詠唱","位移用；不要為了輸出提前燒掉","60s / 2 層"],
+      ["lucid","醒目","備援回魔","60s"]
+     ]}
+  ]
+},
+{
+  lv:80, ex:"暗影封頂", cap:"絕望與異言接手收尾",
+  thesis:"72 級的絕望取代核爆成為單體收尾，80 級的異言則是黑魔單發威力最高的瞬發之一。通常魔紋從此優先餵給異言，不再是穢濁。",
+  why:[
+    ["絕望","350 威力、吃光魔力、落地重新給星極火 3。單體收尾從核爆（240）換成它是純粹的升級。"],
+    ["異言","890 威力、瞬發、不花魔力。<b>通常魔紋一律給異言</b>，穢濁只在多目標時才用。"],
+    ["兩層魔紋","80 級起可以存兩層，容錯變大，但仍然不要放到溢出。"],
+    ["Enochian 15%","78 級後加成 15%。這個數字乘在<b>所有</b>傷害上，所以維持元素永遠優先於任何單發選擇。"]
+  ],
+  blocks:[
+    {title:"開場", meta:"Opener",
+     rows:[
+      S("umbralsoul",{n:"前置",cls:"i",tip:"戰鬥外 · 冰3 滿魔"}),
+      S("fire3",{n:"1",cls:"f",tip:"倒數起手 · 免費"}),
+      S("thunder3",{n:"2",cls:"a",tip:"雷雲"}),
+      O([["potion",""],["leylines",""]]),
+      S("fire4",{n:"3",cls:"f",mp:"冰針 ×3"}),
+      S("fire4",{n:"4",cls:"f"}),
+      S("fire4",{n:"5",cls:"f"}),
+      S("fire4",{n:"6",cls:"f"}),
+      S("fire4",{n:"7",cls:"f"}),
+      S("fire4",{n:"8",cls:"f"}),
+      S("fire4",{n:"9",cls:"f"}),
+      S("despair",{n:"10",cls:"f",tip:"吃光魔力"}),
+      O([["manafont",""]]),
+      S("fire4",{n:"11",cls:"f"}),
+      S("fire4",{n:"12",cls:"f"}),
+      S("fire4",{n:"13",cls:"f"}),
+      S("xeno",{n:"14",cls:"a",tip:"瞬發 890"}),
+      S("fire4",{n:"15",cls:"f"}),
+      S("fire4",{n:"16",cls:"f"}),
+      S("fire4",{n:"17",cls:"f"}),
+      S("despair",{n:"18",cls:"f"}),
+      S("blizzard3",{n:"19",cls:"i"})
+     ]},
+    {title:"標準循環", meta:"Loop · 約 11–12 GCD",
+     rows:[
+      LANE("fire","火階段 · 星極火 3","火焰III（免費）→ 火焰IV ×7 → 絕望。有魔紋就在中段插一發異言。",[
+        S("fire3",{n:"1",cls:"f",tip:"免費"}),
+        S("fire4",{n:"2",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"3",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"4",cls:"f",mp:"冰針"}),
+        S("xeno",{n:"—",cls:"a",tip:"有魔紋時插入"}),
+        S("fire4",{n:"5",cls:"f"}),
+        S("fire4",{n:"6",cls:"f"}),
+        S("fire4",{n:"7",cls:"f"}),
+        S("fire4",{n:"8",cls:"f"}),
+        S("despair",{n:"9",cls:"f",tip:"吃光魔力"})
+      ]),
+      SWAP("屬性切換 → 取得雷雲"),
+      LANE("ice","冰階段 · 靈極冰 3",null,[
+        S("blizzard3",{n:"10",cls:"i",tip:"免費 · 回滿"}),
+        S("thunder3",{n:"11",cls:"a",tip:"續 DoT"}),
+        S("blizzard4",{n:"12",cls:"i",tip:"3 冰針"})
+      ])
+     ]},
+    {title:"插隊與資源", meta:"oGCD",
+     ladder:[
+      ["manafont","魔泉","絕望之後立刻按，直接再開一輪完整火階段","120s"],
+      ["leylines","黑魔紋","火階段開頭","120s"],
+      ["triplecast","三連詠唱","位移用","60s / 2 層"],
+      ["lucid","醒目","備援回魔","60s"]
+     ]}
+  ]
+},
+{
+  lv:90, ex:"曉月封頂", cap:"悖論插進火階段中段",
+  thesis:"90 級的悖論是第一個「花魔力還划算」的插入招：540 威力瞬發，而且在火階段必定送一發免費的火焰III。它把火階段從一條直線變成有節奏的兩段。",
+  why:[
+    ["悖論的算式","火階段的悖論花 1600 魔力換 540 威力，<b>再送一發免費瞬發的火焰III（290）</b>。等同 830 威力／1600 魔力，效率高於火焰IV 的 300／800。"],
+    ["取得條件","火 3 之後切到冰、或冰 3 且滿冰針之後切到火，悖論標記就會亮。所以<b>一個循環剛好各用一次</b>：冰階段一發免費的、火階段一發花錢的。"],
+    ["詳述","120 秒直接 +1 通常魔紋，讓爆發窗多一發異言。對齊魔泉一起用。"],
+    ["Enochian 22%","86 級後加成 22%。到這個等級，斷元素的代價已經高到任何走位都該用三連詠唱或靈極魂化解。"]
+  ],
+  blocks:[
+    {title:"開場", meta:"Opener",
+     rows:[
+      S("umbralsoul",{n:"前置",cls:"i",tip:"戰鬥外 · 冰3 滿魔"}),
+      S("fire3",{n:"1",cls:"f",tip:"倒數起手 · 免費"}),
+      S("thunder3",{n:"2",cls:"a",tip:"雷雲"}),
+      O([["potion",""],["leylines",""]]),
+      S("fire4",{n:"3",cls:"f",mp:"冰針 ×3"}),
+      S("fire4",{n:"4",cls:"f"}),
+      S("fire4",{n:"5",cls:"f"}),
+      S("paradox",{n:"6",cls:"a",tip:"→ 火法加速"}),
+      S("fire4",{n:"7",cls:"f"}),
+      S("fire4",{n:"8",cls:"f"}),
+      S("fire4",{n:"9",cls:"f"}),
+      S("fire3",{n:"10",cls:"f",tip:"火法加速 · 免費瞬發"}),
+      S("despair",{n:"11",cls:"f",tip:"吃光魔力"}),
+      O([["manafont","滿魔＋冰針＋悖論"]]),
+      S("fire4",{n:"12",cls:"f"}),
+      S("fire4",{n:"13",cls:"f"}),
+      S("fire4",{n:"14",cls:"f"}),
+      S("paradox",{n:"15",cls:"a"}),
+      S("fire4",{n:"16",cls:"f"}),
+      S("fire4",{n:"17",cls:"f"}),
+      S("fire4",{n:"18",cls:"f"}),
+      S("fire3",{n:"19",cls:"f",tip:"火法加速"}),
+      S("despair",{n:"20",cls:"f"}),
+      S("blizzard3",{n:"21",cls:"i"})
+     ]},
+    {title:"標準循環", meta:"Loop · 約 14 GCD",
+     rows:[
+      LANE("fire","火階段 · 星極火 3","三發火焰IV（吃冰針）→ 悖論 → 三發火焰IV → 免費火焰III → 絕望。異言有層數就插。",[
+        S("fire3",{n:"1",cls:"f",tip:"免費"}),
+        S("fire4",{n:"2",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"3",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"4",cls:"f",mp:"冰針"}),
+        S("paradox",{n:"5",cls:"a",tip:"→ 火法加速"}),
+        S("fire4",{n:"6",cls:"f"}),
+        S("fire4",{n:"7",cls:"f"}),
+        S("fire4",{n:"8",cls:"f"}),
+        S("fire3",{n:"9",cls:"f",tip:"免費瞬發"}),
+        S("despair",{n:"10",cls:"f",tip:"吃光魔力"})
+      ]),
+      SWAP("屬性切換 → 取得雷雲＋悖論標記"),
+      LANE("ice","冰階段 · 靈極冰 3","四個 GCD：回滿、續 DoT、補冰針、再用一發免費的悖論收尾。",[
+        S("blizzard3",{n:"11",cls:"i",tip:"免費 · 回滿"}),
+        S("thunder3",{n:"12",cls:"a",tip:"續 DoT"}),
+        S("blizzard4",{n:"13",cls:"i",tip:"3 冰針"}),
+        S("paradox",{n:"14",cls:"a",tip:"冰階段免費"})
+      ])
+     ]},
+    {title:"插隊與資源", meta:"oGCD",
+     ladder:[
+      ["manafont","魔泉","絕望之後按：滿魔＋3 冰針＋雷雲＋悖論，等於白送一整輪火階段","100s"],
+      ["leylines","黑魔紋","火階段開頭","120s / 2 層"],
+      ["amplifier","詳述","+1 通常魔紋，對齊魔泉","120s"],
+      ["triplecast","三連詠唱","位移用","60s / 2 層"],
+      ["lucid","醒目","備援回魔","60s"]
+     ]}
+  ]
+},
+{
+  lv:100, ex:"黃金封頂", cap:"六發火焰IV換一顆核爆星",
+  thesis:"100 級加上核爆星與瞬發的絕望，火階段的長度被「星極魂剛好六層」鎖死：六發火焰IV、一發悖論、一發免費火焰III、絕望、核爆星。整條線是被資源算出來的，不是背出來的。",
+  why:[
+    ["六的來源","火焰IV 每發 +1 星極魂，滿 6 層才開得了核爆星（500 威力）。所以火階段<b>固定六發火焰IV</b>，多打一發是浪費、少打一發開不出來。"],
+    ["魔力剛好","滿魔 10000：三發吃冰針的火焰IV（2400）＋悖論（1600）＋三發全價火焰IV（4800）＝ 8800，剩下的正好餵給絕望。<b>數字是對齊的，不是巧合</b>。"],
+    ["絕望瞬發","100 級特性讓絕望不再需要詠唱，尾巴「絕望 → 核爆星」不會被詠唱拖住，也讓走位容錯變大。"],
+    ["魔泉的位置","核爆星之後立刻按魔泉：滿魔、3 冰針、雷雲、悖論一次到齊，直接原地再跑一輪完整火階段，不必回冰。"]
+  ],
+  blocks:[
+    {title:"開場", meta:"Opener · 火階段 ×2",
+     sub:"戰鬥前用靈極魂備好冰 3、3 冰針、滿魔力；倒數讀火焰III。第一輪火階段結束後用魔泉直接接第二輪。",
+     rows:[
+      S("umbralsoul",{n:"前置",cls:"i",tip:"戰鬥外 · 冰3／3冰針／滿魔"}),
+      S("fire3",{n:"1",cls:"f",tip:"倒數起手 · 免費減半"}),
+      S("highthunder",{n:"2",cls:"a",tip:"雷雲 · DoT 30 秒"}),
+      O([["potion",""],["leylines","站進去"]]),
+      S("fire4",{n:"3",cls:"f",mp:"冰針 ×3"}),
+      S("fire4",{n:"4",cls:"f",mp:"冰針"}),
+      S("fire4",{n:"5",cls:"f",mp:"冰針"}),
+      S("paradox",{n:"6",cls:"a",tip:"→ 火法加速"}),
+      S("fire4",{n:"7",cls:"f"}),
+      S("fire4",{n:"8",cls:"f"}),
+      S("fire4",{n:"9",cls:"f",tip:"星極魂滿 6"}),
+      S("fire3",{n:"10",cls:"f",tip:"火法加速 · 免費瞬發"}),
+      S("despair",{n:"11",cls:"f",tip:"瞬發 · 吃光魔力"}),
+      S("flarestar",{n:"12",cls:"f",tip:"6 層星極魂"}),
+      O([["manafont","滿魔＋冰針＋悖論"]]),
+      S("fire4",{n:"13",cls:"f",mp:"冰針 ×3"}),
+      S("fire4",{n:"14",cls:"f",mp:"冰針"}),
+      S("fire4",{n:"15",cls:"f",mp:"冰針"}),
+      S("paradox",{n:"16",cls:"a"}),
+      S("fire4",{n:"17",cls:"f"}),
+      S("fire4",{n:"18",cls:"f"}),
+      S("fire4",{n:"19",cls:"f"}),
+      S("fire3",{n:"20",cls:"f",tip:"火法加速"}),
+      S("despair",{n:"21",cls:"f"}),
+      S("flarestar",{n:"22",cls:"f"}),
+      S("blizzard3",{n:"23",cls:"i",tip:"免費 · 回滿魔力"})
+     ]},
+    {title:"標準循環", meta:"Loop · 15 GCD",
+     rows:[
+      LANE("fire","火階段 · 星極火 3","十一個 GCD，星極魂剛好在第九發火焰IV處滿層，核爆星收尾。異言有層數就插進中段。",[
+        S("fire3",{n:"1",cls:"f",tip:"免費減半"}),
+        S("fire4",{n:"2",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"3",cls:"f",mp:"冰針"}),
+        S("fire4",{n:"4",cls:"f",mp:"冰針"}),
+        S("paradox",{n:"5",cls:"a",tip:"→ 火法加速"}),
+        S("fire4",{n:"6",cls:"f"}),
+        S("fire4",{n:"7",cls:"f"}),
+        S("fire4",{n:"8",cls:"f",tip:"星極魂 6 層"}),
+        S("fire3",{n:"9",cls:"f",tip:"免費瞬發"}),
+        S("despair",{n:"10",cls:"f",tip:"吃光魔力"}),
+        S("flarestar",{n:"11",cls:"f",tip:"500"})
+      ]),
+      SWAP("屬性切換 → 取得雷雲＋悖論標記"),
+      LANE("ice","冰階段 · 靈極冰 3","四個 GCD 就結束：回滿魔力、續 DoT、補三顆冰針、免費悖論。",[
+        S("blizzard3",{n:"12",cls:"i",tip:"免費 · 回滿 10000"}),
+        S("highthunder",{n:"13",cls:"a",tip:"續 DoT 30 秒"}),
+        S("blizzard4",{n:"14",cls:"i",tip:"3 冰針"}),
+        S("paradox",{n:"15",cls:"a",tip:"冰階段免費"})
+      ])
+     ]},
+    {title:"插隊與資源", meta:"oGCD",
+     ladder:[
+      ["manafont","魔泉","核爆星之後立刻按，原地再跑一輪完整火階段","100s"],
+      ["leylines","黑魔紋","火階段開頭蓋下去；轉移魔紋可以在不重置時間的情況下換位置","120s / 2 層"],
+      ["amplifier","詳述","+1 通常魔紋，讓爆發窗多一發異言","120s"],
+      ["triplecast","三連詠唱","位移用；不要為了輸出提前燒掉","60s / 2 層"],
+      ["swiftcast","即刻詠唱","救一發火焰III或冰結III的走位","40s"],
+      ["lucid","醒目","備援回魔","60s"]
+     ]}
+  ]
+}
+];
+
+/* ---------------- render ---------------- */
+function icon(key, small){
+  const d=A[key]; const nm=d?d[1]:key;
+  if(!d||!d[0]) return `<span class="${small?'fb':'fallback'}" aria-hidden="true">${nm.slice(0,1)}</span>`;
+  return `<img class="${small?'':'ico'}" src="${B}${d[0]}.png" alt="" loading="lazy"
+    onerror="this.outerHTML='<span class=\\'${small?'fb':'fallback'}\\'>${nm.slice(0,1)}</span>'">`;
+}
+function stepHTML(s){
+  const d=A[s.a]||[null,s.a,""];
+  return `<div class="step ${s.cls||''}">
+    <span class="n">${s.n===undefined?'':s.n}</span>
+    ${icon(s.a)}
+    <span class="nm">${d[1]}</span>
+    <span class="en">${d[2]||''}</span>
+    ${s.tip?`<span class="tip">${s.tip}</span>`:''}
+    ${s.mp?`<span class="mp">${s.mp}</span>`:''}
+  </div>`;
+}
+function weaveHTML(w){
+  return `<div class="weave">${w.list.map(([k,lb])=>{
+    const d=A[k]||[null,k,""];
+    return `<span class="pip">${icon(k,true)}<span class="lb">${d[1]}${lb?'<br>'+lb:''}</span></span>`;
+  }).join("")}</div>`;
+}
+function laneHTML(l){
+  return `<div class="lane ${l.phase}">
+    <p class="lb">${l.label}</p>
+    ${l.desc?`<p class="desc">${l.desc}</p>`:''}
+    <div class="rail">${l.steps.map(stepHTML).join("")}</div>
+  </div>`;
+}
+function rowsHTML(rows){
+  let out="", buf=[];
+  const flush=()=>{ if(buf.length){ out+=`<div class="rail">${buf.join("")}</div>`; buf=[]; } };
+  rows.forEach(r=>{
+    if(r.t==="lane"){ flush(); out+=laneHTML(r); }
+    else if(r.t==="swap"){ flush(); out+=`<p class="swap">${r.txt}</p>`; }
+    else if(r.t==="weave"){ buf.push(weaveHTML(r)); }
+    else buf.push(stepHTML(r));
+  });
+  flush();
+  return out;
+}
+function ladderHTML(list){
+  return `<ol class="ladder">${list.map(([k,t,d,tag])=>
+    `<li>${icon(k)}<span class="txt"><strong>${t}${tag?`<em>${tag}</em>`:''}</strong><span>${d}</span></span></li>`
+  ).join("")}</ol>`;
+}
+
+const tabs=document.querySelector(".tabs"), panels=document.getElementById("panels");
+LEVELS.forEach((L,i)=>{
+  const b=document.createElement("button");
+  b.className="tab"; b.type="button"; b.setAttribute("role","tab");
+  b.setAttribute("aria-selected", i===LEVELS.length-1?"true":"false");
+  b.setAttribute("aria-controls","p"+L.lv); b.id="t"+L.lv;
+  b.innerHTML=`<span class="lv">${L.lv}</span><span class="ex">${L.ex}</span>`;
+  b.addEventListener("click",()=>select(i));
+  tabs.appendChild(b);
+
+  const p=document.createElement("div");
+  p.className="panel"; p.id="p"+L.lv; p.setAttribute("role","tabpanel");
+  p.setAttribute("aria-labelledby","t"+L.lv);
+  p.hidden = i!==LEVELS.length-1;
+  p.innerHTML=`
+    <div class="thesis">
+      <div><h2>${L.cap}</h2><p>${L.thesis}</p></div>
+      <ul class="why">${L.why.map(([k,v])=>`<li><span class="k">${k}</span><span>${v}</span></li>`).join("")}</ul>
+    </div>
+    ${L.blocks.map(bk=>`
+      <section class="block">
+        <div class="head"><h3>${bk.title}</h3><span class="meta">${bk.meta||''}</span><span class="rule"></span></div>
+        ${bk.sub?`<p class="sub">${bk.sub}</p>`:''}
+        ${bk.rows?rowsHTML(bk.rows):''}
+        ${bk.ladder?ladderHTML(bk.ladder):''}
+      </section>`).join("")}
+  `;
+  panels.appendChild(p);
+});
+function select(i){
+  [...tabs.children].forEach((t,j)=>t.setAttribute("aria-selected", j===i?"true":"false"));
+  [...panels.children].forEach((p,j)=>p.hidden = j!==i);
+}
+</script>
+</body>
+</html>
